@@ -20,6 +20,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public ResponseEntity<ApiResponseDto> signup(SignupRequestDto requestDto) {
+        if (requestDto.getPassword().contains(requestDto.getUsername())) {
+            throw new IllegalArgumentException("비밀번호에 닉네임이 포함되어 있습니다.");
+        }
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
         String email = requestDto.getEmail();
