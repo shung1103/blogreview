@@ -64,6 +64,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String token = jwtUtil.createToken(username, role);
         jwtUtil.deleteCookie(token, response);
-        response.sendRedirect("/dev/user/login-page"); // "/"로 리다이렉트
+        response.sendRedirect("/"); // "/"로 리다이렉트
     }
 }

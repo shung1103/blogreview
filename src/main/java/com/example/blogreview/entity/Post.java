@@ -1,18 +1,18 @@
 package com.example.blogreview.entity;
 
 import com.example.blogreview.dto.PostRequestDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@DynamicInsert
-@DynamicUpdate
 @NoArgsConstructor
 @Table(name = "posts")
 public class Post extends Timestamped {
@@ -27,9 +27,13 @@ public class Post extends Timestamped {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<Comment> commentList = new ArrayList<>();
 
     public Post(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();

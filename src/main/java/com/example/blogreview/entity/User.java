@@ -32,7 +32,7 @@ public class User {
     @Column(name = "introduction")
     private String introduction;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<Post> postList;
 
     @Column(nullable = false)

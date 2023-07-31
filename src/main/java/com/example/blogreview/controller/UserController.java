@@ -14,13 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @Controller
@@ -30,14 +27,6 @@ public class UserController {
     private final UserService userService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @GetMapping("/login-page")
-    public String loginPage() {return "login";}
-
-    @GetMapping("/signup")
-    public String signupPage() {
-        return "signup";
-    }
-
     @RequestMapping("/logout")
     public ResponseEntity<ApiResponseDto> logout(HttpServletResponse response, Authentication authResult) throws ServletException, IOException {
         jwtAuthenticationFilter.deleteAuthentication(response, authResult);
@@ -45,18 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String signup(@Valid SignupRequestDto requestDto, BindingResult bindingResult) {
-        // Validation 예외처리
-        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        if (fieldErrors.size()>0) {
-            for (FieldError fieldError: bindingResult.getFieldErrors()) {
-                log.error(fieldError.getField() + "필드: "+fieldError.getDefaultMessage());
-            }
-            return "redirect:/api/user/signup";
-        }
-
-        userService.signup(requestDto);
-
-        return  "redirect:/api/user/login-page";
+    public ResponseEntity<ApiResponseDto> signup(@Valid SignupRequestDto requestDto, BindingResult bindingResult) {
+        return userService.signup(requestDto);
     }
 }
