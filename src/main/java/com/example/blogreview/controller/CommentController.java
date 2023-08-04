@@ -19,17 +19,17 @@ public class CommentController {
     // 댓글 작성
     @PostMapping("/{postid}/comment")
     public CommentResponseDto createComment(@PathVariable Long postid, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.createComment(postid, requestDto, userDetails.getUser());
+        return commentService.createComment(postid, requestDto, userDetails);
     }
 
     // 댓글 수정
     @PutMapping("/{postid}/comment/{commentid}")
     public ResponseEntity<String> updateComment(@PathVariable Long postid, @PathVariable Long commentid, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse res) {
-        return commentService.updateCommnet(postid, commentid, requestDto, userDetails.getUser(), res);
+        return commentService.updateCommnet(postid, commentid, requestDto, userDetails, res);
     }
 
     @DeleteMapping("/{postid}/comment/{commentid}")
     public ResponseEntity<String> deleteComment(@PathVariable Long postid, @PathVariable Long commentid, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.deleteComment(postid, commentid, userDetails.getUser());
+        return commentService.deleteComment(postid, commentid, userDetails);
     }
 }

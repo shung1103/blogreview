@@ -32,18 +32,18 @@ public class PostController {
     // 게시글 작성
     @PostMapping("/api/post")
     public PostResponseDto createPost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return postService.createPost(requestDto, userDetails.getUser());
+        return postService.createPost(requestDto, userDetails);
     }
 
     // 게시글 수정
     @Transactional
     @PutMapping("/api/post/{id}")
     public ResponseEntity<String> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return postService.updatePost(id, requestDto, userDetails.getUser());
+        return postService.updatePost(id, requestDto, userDetails);
     }
     // 게시글 삭제
     @DeleteMapping("/api/post/{id}")
     public ResponseEntity<String> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return postService.deletePost(id, userDetails.getUser());
+        return postService.deletePost(id, userDetails);
     }
 }

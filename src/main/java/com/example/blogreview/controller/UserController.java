@@ -4,6 +4,7 @@ import com.example.blogreview.dto.ApiResponseDto;
 import com.example.blogreview.dto.SignupRequestDto;
 import com.example.blogreview.security.JwtAuthenticationFilter;
 import com.example.blogreview.service.UserService;
+import com.example.blogreview.service.UserServiceImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -23,7 +24,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 public class UserController {
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @RequestMapping("/logout")
@@ -34,6 +35,6 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseDto> signup(@Valid SignupRequestDto requestDto) {
-        return userService.signup(requestDto);
+        return userServiceImpl.signup(requestDto);
     }
 }

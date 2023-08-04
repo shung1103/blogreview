@@ -5,6 +5,8 @@ import com.example.blogreview.dto.PostResponseDto;
 import com.example.blogreview.entity.Post;
 import com.example.blogreview.entity.User;
 import com.example.blogreview.repository.PostRepository;
+import com.example.blogreview.security.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,68 +14,41 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class PostService {
-    @Autowired
-    private final PostRepository postRepository;
+public interface PostService {
 
-    public PostService(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
+    /**
+     * 게시글 목록 조회 API
+     * @return 목록 조회 결과
+     */
+    List<Post> getAllPosts();
 
-    // 게시글 목록 조회
-    public List<Post> getAllPosts() {
-        return postRepository.findAllByOrderByCreatedAtDesc();
-    }
+    /**
+     * 게시글 생성 API
+     * @param requestDto 게시글 생성 요청 정보
+     * @param userDetails 게시글 생성 요청자 정보
+     * @return 게시글 생성 결과
+     */
+    PostResponseDto createPost(PostRequestDto requestDto, UserDetailsImpl userDetails);
 
-    // 게시글 생성하기
-    public PostResponseDto createPost(PostRequestDto requestDto, User user) {
-        // requestDto로부터 받은 게시글의 제목과 내용을 Post에 넣어줌
-        Post post = new Post(requestDto);
-        // 위에서 생성한 post에 user를 넣어줌
-        post.setUser(user);
-        // Repository에 post 저장하기
-        postRepository.save(post);
-        // 위에서 생성한 post를 ResponseDto에 담아서 반환하기
-        return new PostResponseDto(post);
-    } // 게시글 생성
+    /**
+     * 게시글 수정 API
+     * @param id 선택 게시글 정보
+     * @param userDetails 게시글 수정 요청자 정보
+     * @param requestDto 게시글 수정 요청 정보
+     */
+    ResponseEntity<String> updatePost(Long id, PostRequestDto requestDto, UserDetailsImpl userDetails);
 
-    // 게시글 수정
-    public ResponseEntity<String> updatePost(Long id, PostRequestDto requestDto, User user) {
-        // postRepository에서 id로 해당 게시글 찾아오기
-        Post post = findByPostId(id);
+    /**
+     * 게시글 삭제 API
+     * @param id 선택 게시글 정보
+     * @param userDetails 게시글 삭제 요청자 정보
+     */
+    ResponseEntity<String> deletePost(Long id, UserDetailsImpl userDetails);
 
-        // 해당 post의 작성자가 맞는지 확인
-        if (user.getUsername().equals(post.getUser().getUsername())) {
-            // requestDto로부터 받은 게시글의 제목과 내용으로 해당 post 내용 수정하기
-            post.update(requestDto);
-            // responseDto에 post 내용을 담아서 반환하기
-            return ResponseEntity.ok("Success"); // 상태 코드 200 반환
-        } else {
-            // 해당 post의 작성자가 아니라면 null 반환하기
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error"); // 상태 코드 400 반환
-        }
-    }
-
-    // 게시글 삭제
-    public ResponseEntity<String> deletePost(Long id, User user) {
-        // postRepository에서 id로 해당 게시글 찾아오기
-        Post post = findByPostId(id);
-
-        // 해당 post의 작성자가 맞는지 확인
-        if (user.getUsername().equals(post.getUser().getUsername())) {
-            // 맞으면 삭제하기
-            postRepository.delete(post);
-            return ResponseEntity.ok("Success"); // 상태 코드 200 반환
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error"); // 상태 코드 400 반환
-        }
-    }
-
-    // post의 ID 값으로 postRepository 에서 post 찾아서 반환하기
-    public Post findByPostId(Long id) {
-        return postRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Not Found "+ id)
-        );
-    }
+    /**
+     * 선택 게시글 조회 API
+     * @param id 선택 게시글 정보
+     * @return 게시글 선택 결과
+     */
+    Post findByPostId(Long id);
 }
